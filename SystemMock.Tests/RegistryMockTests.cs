@@ -1,5 +1,6 @@
 ﻿using System;
 using SystemInterface.Microsoft.Win32;
+using Microsoft.Win32;
 using NUnit.Framework;
 
 namespace SystemMock.Tests
@@ -98,7 +99,6 @@ namespace SystemMock.Tests
         }
 
         [Test]
-        [Ignore]
         public void SetValue_RootKeyWithOneSubkeyName_SetsValueOfRegistryKeySubkey()
         {
             // Arrange
@@ -111,10 +111,29 @@ namespace SystemMock.Tests
             var actualSubkey = actualRegistryKey.OpenSubKey("System");
 
             // Assert
-            Assert.IsNotNull(actualSubkey);
+            Assert.IsNotNull(actualSubkey, "Registry root key HKEY_LOCAL_MACHINE should have subkey named 'System'.");
 
             var actualNameValue = actualSubkey.GetValue("Name");
 
+            Assert.AreEqual(expectedValue, actualNameValue);
+        }
+        [Test]
+        public void SetValue_RootKeyWithDeepSubkeyHierarchy_CreatesCorrectKeysAndSetsValue()
+        {
+            // Arrange
+            var expectedValue = "1.0.0";
+
+            // Act
+            this.registry.SetValue(@"HKEY_CURRENT_USER\Software\Contoso\BizApp", "Version", expectedValue);
+
+            var actualRegistryKey = this.registry.CurrentUser;
+            var actualSubkey = actualRegistryKey.OpenSubKey(@"Software\Contoso\BizApp");
+
+            // Assert
+            Assert.IsNotNull(actualSubkey, @"Registry root key HKEY_CURRENT_USER should have subkey named 'Software\Contoso\BizApp'.");
+
+            var actualNameValue = actualSubkey.GetValue("Version");
+            Assert.AreEqual("BizApp", actualSubkey.Name);
             Assert.AreEqual(expectedValue, actualNameValue);
         }
     }

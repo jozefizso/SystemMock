@@ -57,11 +57,17 @@ namespace SystemMock
                 additionaSubKeysName = subkey.Substring(separatorIndex + 1);
             }
 
-            var key = new RegistryKeyMock(subKeySimpleName);
-            this.subkeys.Add(subKeySimpleName, key);
+            RegistryKeyMock key;
+            this.subkeys.TryGetValue(subKeySimpleName, out key);
+            if (key == null)
+            {
+                key = new RegistryKeyMock(subKeySimpleName);
+                this.subkeys.Add(subKeySimpleName, key);
+            }
+
             if (additionaSubKeysName != null)
             {
-                key.CreateSubKey(additionaSubKeysName);
+                return key.CreateSubKey(additionaSubKeysName);
             }
             return key;
         }
@@ -205,8 +211,21 @@ namespace SystemMock
 
         public IRegistryKey OpenSubKey(string name)
         {
+            string subKeyName;
+            var baseKeyName = this.GetBaseKeyName(name, out subKeyName);
+
             RegistryKeyMock key;
-            this.subkeys.TryGetValue(name, out key);
+            this.subkeys.TryGetValue(baseKeyName, out key);
+            if (key == null)
+            {
+                return null;
+            }
+
+            if (subKeyName != null)
+            {
+                return key.OpenSubKey(subKeyName);
+            }
+
             return key;
         }
 
@@ -252,6 +271,21 @@ namespace SystemMock
 
         public void Dispose()
         {
+        }
+
+        private string GetBaseKeyName(string fullKeyName, out string subKeyName)
+        {
+            subKeyName = null;
+
+            var baseKeyName = fullKeyName;
+            var separatorIndex = baseKeyName.IndexOf('\\');
+            if (separatorIndex >= 0)
+            {
+                baseKeyName = fullKeyName.Substring(0, separatorIndex);
+                subKeyName = fullKeyName.Substring(separatorIndex + 1);
+            }
+
+            return baseKeyName;
         }
     }
 }

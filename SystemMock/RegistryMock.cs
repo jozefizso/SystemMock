@@ -72,19 +72,35 @@ namespace SystemMock
 
         public void SetValue(string keyName, string valueName, object value)
         {
-            ////int separatorIndex = keyName.IndexOf('\\');
-            ////var rootKeyName = keyName.Substring(0, separatorIndex);
-            ////var subKeyName = keyName.Substring(separatorIndex + 1);
-
-            ////var rootKey = this.keys[rootKeyName];
-            ////var key = rootKey.CreateSubKey(subKeyName);
-            var rootKey = this.keys[keyName];
-            rootKey.SetValue(valueName, value);
+            string subKeyName;
+            var rootKeyName = this.GetRootKeyName(keyName, out subKeyName);
+            var rootKey = this.keys[rootKeyName];
+            var subKey = (IRegistryKey)rootKey;
+            if (subKeyName != null)
+            {
+                subKey = rootKey.CreateSubKey(subKeyName);
+            }
+            subKey.SetValue(valueName, value);
         }
 
         public IRegistryKey Users
         {
             get { return this.usersKey; }
+        }
+
+        private string GetRootKeyName(string fullKeyName, out string subKeyName)
+        {
+            subKeyName = null;
+
+            var rootKeyName = fullKeyName;
+            var separatorIndex = rootKeyName.IndexOf('\\');
+            if (separatorIndex >= 0)
+            {
+                rootKeyName = fullKeyName.Substring(0, separatorIndex);
+                subKeyName = fullKeyName.Substring(separatorIndex + 1);
+            }
+
+            return rootKeyName;
         }
     }
 }

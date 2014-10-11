@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using SystemInterface.Microsoft.Win32;
 using Microsoft.Win32;
 using NUnit.Framework;
 
@@ -126,17 +127,17 @@ namespace SystemMock.Tests
             var actualCreatedSubKey = this.registryKey.CreateSubKey(@"MyKey\SubKey");
 
             // Act
-            var actualSubKey = this.registryKey.OpenSubKey("MyKey");
+            var actualMyKey = this.registryKey.OpenSubKey("MyKey");
 
             // Assert
             Assert.IsNotNull(actualCreatedSubKey, "RegistryKeyMock should create key 'MyKey'.");
-            Assert.AreEqual("MyKey", actualCreatedSubKey.Name);
+            Assert.AreEqual("SubKey", actualCreatedSubKey.Name);
 
-            Assert.IsNotNull(actualSubKey, "RegistryKeyMock should open key 'MyKey'.");
-            Assert.AreSame(actualCreatedSubKey, actualSubKey);
+            Assert.IsNotNull(actualMyKey, "RegistryKeyMock should open key 'MyKey'.");
 
-            var actualSubSubKey = actualSubKey.OpenSubKey("SubKey");
+            var actualSubSubKey = actualMyKey.OpenSubKey("SubKey");
             Assert.IsNotNull(actualSubSubKey);
+            Assert.AreSame(actualCreatedSubKey, actualSubSubKey);
             Assert.AreEqual("SubKey", actualSubSubKey.Name);
         }
 
@@ -148,20 +149,33 @@ namespace SystemMock.Tests
             // Arrange
 
             // Act
-            var actualSubKey = this.registryKey.CreateSubKey(complexSubKeyName);
+            this.registryKey.CreateSubKey(complexSubKeyName);
 
             // Assert
+            IRegistryKey key = this.registryKey;
             for(int i = 0; i < expectedSubKeyNames.Length; i++)
             {
                 var expectedSubKeyName = expectedSubKeyNames[i];
-                Assert.IsNotNull(actualSubKey, "Registry key with name '{0}' should exist.", expectedSubKeyName);
+                var actualSubKey = key.OpenSubKey(expectedSubKeyName);
+                Assert.IsNotNull(key, "Registry key with name '{0}' should exist.", expectedSubKeyName);
                 Assert.AreEqual(expectedSubKeyName, actualSubKey.Name);
 
-                if ((i + 1) < expectedSubKeyNames.Length)
-                {
-                    actualSubKey = actualSubKey.OpenSubKey(expectedSubKeyNames[i + 1]);
-                }
+                key = actualSubKey;
             }
+        }
+
+        [Test]
+        public void CreateSubKey_SimpleSubKeyNameCreatedTwice_DoesNotOverwriteExistingKey()
+        {
+            // Arrange
+            var key = this.registryKey.CreateSubKey("MyKey");
+            key.SetValue("MyValue", "1");
+
+            // Act
+            var actualKey = this.registryKey.CreateSubKey("MyKey");
+
+            // Assert
+            Assert.AreSame(key, actualKey, "RegistryKeyMock should return existing subkey.");
         }
 
         [Test]
@@ -190,6 +204,22 @@ namespace SystemMock.Tests
 
             // Assert
             Assert.IsNull(actualSubKey);
+        }
+
+        [Test]
+        public void OpenSubKey_ComplexSubKeyName_OpensCorrectSubKey()
+        {
+            // Arrange
+            var key1 = this.registryKey.CreateSubKey(@"Key");
+            var key2 = key1.CreateSubKey("SubKey");
+            var key3 = key2.CreateSubKey("SubSubKey");
+
+            // Act
+            var actualKey = this.registryKey.OpenSubKey(@"Key\SubKey\SubSubKey");
+
+            // Assert
+            Assert.IsNotNull(actualKey, @"RegistryKeyMock should open subkey 'Key\SubKey\SubSubKey'.");
+            Assert.AreSame("SubSubKey", actualKey.Name);
         }
 
         [Test]
