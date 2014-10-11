@@ -12,10 +12,14 @@ namespace SystemMock
     public class RegistryKeyMock : IRegistryKey
     {
         private string name;
+        private Dictionary<string, RegistryKeyMock> subkeys; 
+        private Dictionary<string, object> values;
 
         public RegistryKeyMock(string name)
         {
             this.name = name;
+            this.values = new Dictionary<string, object>();
+            this.subkeys = new Dictionary<string, RegistryKeyMock>();
         }
 
         public void Close()
@@ -120,7 +124,12 @@ namespace SystemMock
 
         public object GetValue(string name)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = "";
+            }
+
+            return this.values[name];
         }
 
         public RegistryValueKind GetValueKind(string name)
@@ -200,22 +209,27 @@ namespace SystemMock
 
         public void SetValue(string name, object value)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = "";
+            }
+
+            this.values[name] = value;
         }
 
         public int SubKeyCount
         {
-            get { throw new NotImplementedException(); }
+            get { return 0; }
         }
 
         public int ValueCount
         {
-            get { throw new NotImplementedException(); }
+            get { return 0; }
         }
 
         public RegistryView View
         {
-            get { throw new NotImplementedException(); }
+            get { return RegistryView.Default; }
         }
 
         public void Dispose()

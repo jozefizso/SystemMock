@@ -7,7 +7,7 @@ namespace SystemMock.Tests
     [TestFixture]
     public class RegistryMockTests
     {
-        private IRegistry registry;
+        private RegistryMock registry;
 
         [SetUp]
         public void SetUp()
@@ -79,6 +79,43 @@ namespace SystemMock.Tests
             // Assert
             Assert.IsNotNull(actualKey);
             Assert.AreEqual("HKEY_USERS", actualKey.Name);
+        }
+
+        [Test]
+        public void SetValue_RootKeyName_SetsValueOfRegistryKey()
+        {
+            // Arrange
+            var expectedValue = "Jozef";
+
+            // Act
+            this.registry.SetValue(@"HKEY_CURRENT_USER", "UserName", expectedValue);
+
+            var actualRegistryKey = this.registry.CurrentUser;
+            var actualUserNameValue = actualRegistryKey.GetValue("UserName");
+
+            // Assert
+            Assert.AreEqual(expectedValue, actualUserNameValue);
+        }
+
+        [Test]
+        [Ignore]
+        public void SetValue_RootKeyWithOneSubkeyName_SetsValueOfRegistryKeySubkey()
+        {
+            // Arrange
+            var expectedValue = "SystemMock.Tests";
+
+            // Act
+            this.registry.SetValue(@"HKEY_LOCAL_MACHINE\System", "Name", expectedValue);
+
+            var actualRegistryKey = this.registry.LocalMachine;
+            var actualSubkey = actualRegistryKey.OpenSubKey("System");
+
+            // Assert
+            Assert.IsNotNull(actualSubkey);
+
+            var actualNameValue = actualSubkey.GetValue("Name");
+
+            Assert.AreEqual(expectedValue, actualNameValue);
         }
     }
 }

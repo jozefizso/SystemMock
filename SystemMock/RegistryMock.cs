@@ -15,6 +15,8 @@ namespace SystemMock
         private RegistryKeyMock performanceDataKey;
         private RegistryKeyMock usersKey;
 
+        private Dictionary<string, RegistryKeyMock> keys; 
+
         public RegistryMock()
         {
             this.classesRootKey = new RegistryKeyMock(RegistryConstants.HKEY_CLASSES_ROOT);
@@ -23,6 +25,14 @@ namespace SystemMock
             this.localMachineKey = new RegistryKeyMock(RegistryConstants.HKEY_LOCAL_MACHINE);
             this.performanceDataKey = new RegistryKeyMock(RegistryConstants.HKEY_PERFORMANCE_DATA);
             this.usersKey = new RegistryKeyMock(RegistryConstants.HKEY_USERS);
+
+            this.keys = new Dictionary<string, RegistryKeyMock>();
+            this.keys[RegistryConstants.HKEY_CLASSES_ROOT] = this.classesRootKey;
+            this.keys[RegistryConstants.HKEY_CURRENT_CONFIG] = this.currentConfigKey;
+            this.keys[RegistryConstants.HKEY_CURRENT_USER] = this.currentUserKey;
+            this.keys[RegistryConstants.HKEY_LOCAL_MACHINE] = this.localMachineKey;
+            this.keys[RegistryConstants.HKEY_PERFORMANCE_DATA] = this.performanceDataKey;
+            this.keys[RegistryConstants.HKEY_USERS] = this.usersKey;
         }
 
         public IRegistryKey ClassesRoot
@@ -62,7 +72,14 @@ namespace SystemMock
 
         public void SetValue(string keyName, string valueName, object value)
         {
-            throw new NotImplementedException();
+            ////int separatorIndex = keyName.IndexOf('\\');
+            ////var rootKeyName = keyName.Substring(0, separatorIndex);
+            ////var subKeyName = keyName.Substring(separatorIndex + 1);
+
+            ////var rootKey = this.keys[rootKeyName];
+            ////var key = rootKey.CreateSubKey(subKeyName);
+            var rootKey = this.keys[keyName];
+            rootKey.SetValue(valueName, value);
         }
 
         public IRegistryKey Users
