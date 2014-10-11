@@ -201,7 +201,7 @@ namespace SystemMock
 
         public IRegistryKey OpenSubKey(string name, bool writable)
         {
-            throw new NotImplementedException();
+            return this.OpenSubKey(name);
         }
 
         public IRegistryKey OpenSubKey(string name, RegistryKeyPermissionCheck permissionCheck)

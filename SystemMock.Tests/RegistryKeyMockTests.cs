@@ -223,6 +223,23 @@ namespace SystemMock.Tests
         }
 
         [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void OpenSubKey_OpenForWritingOverload_OpensCorrectSubKey(bool writable)
+        {
+            // Arrange
+            const string expectedSubKeyName = "MyKey";
+            this.registryKey.CreateSubKey(expectedSubKeyName);
+
+            // Act
+            var actualSubKey = this.registryKey.OpenSubKey(expectedSubKeyName, writable);
+
+            // Assert
+            Assert.IsNotNull(actualSubKey);
+            Assert.AreSame(expectedSubKeyName, actualSubKey.Name);
+        }
+
+        [Test]
         public void ValueCount_RegistryKeyHasSomeValuesSet_RetursNumberOfValuesInRegistryKey([Range(1,5)] int valuesCount)
         {
             // Arrange
