@@ -110,7 +110,7 @@ namespace SystemMock
 
         public string[] GetSubKeyNames()
         {
-            throw new NotImplementedException();
+            return this.subkeys.Keys.OrderBy(key => key, StringComparer.OrdinalIgnoreCase).ToArray();
         }
 
         public object GetValue(string name, object defaultValue, RegistryValueOptions options)

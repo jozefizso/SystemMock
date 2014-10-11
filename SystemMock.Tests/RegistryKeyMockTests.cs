@@ -181,6 +181,30 @@ namespace SystemMock.Tests
         }
 
         [Test]
+        public void GetSubKeyNames_UnorderedSubKeys_ReturnsArrayOfSubKeyNamesInOrder()
+        {
+            // Arrange
+            var expectedValues = new string[] { "", "1", "10", "2", "Abc", "t", "TEST", "Test1", "Test2", "Testík" };
+
+            this.registryKey.CreateSubKey("t");
+            this.registryKey.CreateSubKey("Testík");
+            this.registryKey.CreateSubKey("Abc");
+            this.registryKey.CreateSubKey("");
+            this.registryKey.CreateSubKey("10");
+            this.registryKey.CreateSubKey("2");
+            this.registryKey.CreateSubKey("1");
+            this.registryKey.CreateSubKey("Test1");
+            this.registryKey.CreateSubKey("TEST");
+            this.registryKey.CreateSubKey("Test2");
+
+            // Act
+            var actualValueNames = this.registryKey.GetSubKeyNames();
+
+            // Assert
+            CollectionAssert.AreEqual(expectedValues, actualValueNames);
+        }
+
+        [Test]
         public void Dispose_CallingDisposeMethod_DoesNothing()
         {
             // Arrange
