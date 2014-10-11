@@ -24,7 +24,6 @@ namespace SystemMock
 
         public void Close()
         {
-            throw new NotImplementedException();
         }
 
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions registryOptions, IRegistrySecurity registrySecurity)
@@ -238,7 +237,6 @@ namespace SystemMock
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

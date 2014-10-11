@@ -137,5 +137,28 @@ namespace SystemMock.Tests
             // Assert
             Assert.AreEqual(expectedValue, actualValue);
         }
+
+        [Test]
+        public void Dispose_CallingDisposeMethod_DoesNothing()
+        {
+            // Arrange
+            IDisposable disposable = this.registryKey;
+
+            // Act
+            disposable.Dispose();
+
+            // Assert
+            Assert.Pass();
+        }
+
+        [Test]
+        public void Close_CallingCloseMethod_DoesNothing()
+        {
+            // Arrange & Act
+            this.registryKey.Close();
+
+            // Assert
+            Assert.Pass();
+        }
     }
 }
