@@ -48,8 +48,21 @@ namespace SystemMock
 
         public IRegistryKey CreateSubKey(string subkey)
         {
-            var key = new RegistryKeyMock(subkey);
-            this.subkeys.Add(subkey, key);
+            var subKeySimpleName = subkey;
+            string additionaSubKeysName = null;
+            var separatorIndex = subKeySimpleName.IndexOf('\\');
+            if (separatorIndex >= 0)
+            {
+                subKeySimpleName = subkey.Substring(0, separatorIndex);
+                additionaSubKeysName = subkey.Substring(separatorIndex + 1);
+            }
+
+            var key = new RegistryKeyMock(subKeySimpleName);
+            this.subkeys.Add(subKeySimpleName, key);
+            if (additionaSubKeysName != null)
+            {
+                key.CreateSubKey(additionaSubKeysName);
+            }
             return key;
         }
 
@@ -192,7 +205,9 @@ namespace SystemMock
 
         public IRegistryKey OpenSubKey(string name)
         {
-            throw new NotImplementedException();
+            RegistryKeyMock key;
+            this.subkeys.TryGetValue(name, out key);
+            return key;
         }
 
         public RegistryKey RegistryKeyInstance
