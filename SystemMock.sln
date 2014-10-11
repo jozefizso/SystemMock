@@ -14,6 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2C22B5
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6C5A30FE-DD2C-41DE-9196-4600C43782E3}"
+	ProjectSection(SolutionItems) = preProject
+		Build\SystemMock.snk = Build\SystemMock.snk
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,8 +27,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73CC4ECF-E751-4416-9976-CC88F59F0DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73CC4ECF-E751-4416-9976-CC88F59F0DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73CC4ECF-E751-4416-9976-CC88F59F0DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73CC4ECF-E751-4416-9976-CC88F59F0DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73CC4ECF-E751-4416-9976-CC88F59F0DAB}.Release|Any CPU.ActiveCfg = Release 4.5|Any CPU
+		{73CC4ECF-E751-4416-9976-CC88F59F0DAB}.Release|Any CPU.Build.0 = Release 4.5|Any CPU
 		{489C83CE-1D90-4E0B-93BF-630EE0888FFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{489C83CE-1D90-4E0B-93BF-630EE0888FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{489C83CE-1D90-4E0B-93BF-630EE0888FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
