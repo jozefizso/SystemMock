@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using SystemInterface.Microsoft.Win32;
 using Microsoft.Win32;
@@ -339,6 +340,79 @@ namespace SystemMock.Tests
 
             // Assert
             CollectionAssert.AreEqual(expectedValues, actualValueNames);
+        }
+
+        [Test]
+        public void DeleteSubKey_RegistryKeyWithExistingSubKey_RemovesTheSubKey()
+        {
+            // Arrange
+            this.registryKey.CreateSubKey("MyKey");
+
+            // Act
+            this.registryKey.DeleteSubKey("MyKey");
+
+            var actualKey = this.registryKey.OpenSubKey("MyKey");
+
+            // Assert
+            Assert.IsNull(actualKey, "Registry subkey 'MyKey' should not exist.");
+        }
+
+        [Test]
+        public void DeleteSubKey_SubKeyInOtherCaseSensitivity_RemovesTheSubKey()
+        {
+            // Arrange
+            this.registryKey.CreateSubKey("MyKey");
+
+            // Act
+            this.registryKey.DeleteSubKey("MYKEY");
+
+            var actualKey = this.registryKey.OpenSubKey("MyKey");
+
+            // Assert
+            Assert.IsNull(actualKey, "Registry subkey 'MyKey' should not exist.");
+        }
+
+        [Test]
+        public void DeleteSubKey_RegistryKeyHasSubKeys_ThrowsInvalidOperationExceptionOnDeletion()
+        {
+            // Arrange
+            this.registryKey.CreateSubKey(@"MyKey\SubKey");
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => this.registryKey.DeleteSubKey("MyKey"));
+
+            var actualKey = this.registryKey.OpenSubKey("MyKey");
+            Assert.IsNotNull(actualKey);
+        }
+
+        [Test]
+        public void DeleteSubKey_NonExistingSubKeyName_ThrowsArgumentException()
+        {
+            // Arrange
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => this.registryKey.DeleteSubKey("Non-existing subkey"));
+        }
+
+        [Test]
+        public void DeleteSubKey_ForceExceptionOnNonExistingSubKeyName_ThrowsArgumentException()
+        {
+            // Arrange
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => this.registryKey.DeleteSubKey("Non-existing subkey", true));
+        }
+
+        [Test]
+        public void DeleteSubKey_DoNotThrowExceptionOnNonExistingSubKeyName_DoesNothing()
+        {
+            // Arrange
+
+            // Act
+            this.registryKey.DeleteSubKey("Non-existing subkey", false);
+
+            // Assert
+            Assert.Pass();
         }
 
         [Test]

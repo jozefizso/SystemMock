@@ -19,7 +19,7 @@ namespace SystemMock
         {
             this.name = name;
             this.values = new Dictionary<string, object>();
-            this.subkeys = new Dictionary<string, RegistryKeyMock>();
+            this.subkeys = new Dictionary<string, RegistryKeyMock>(StringComparer.OrdinalIgnoreCase);
         }
 
         public void Close()
@@ -72,14 +72,26 @@ namespace SystemMock
             return key;
         }
 
-        public void DeleteSubKey(string subkey, bool throwOnMissingSubKey)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteSubKey(string subkey)
         {
-            throw new NotImplementedException();
+            this.DeleteSubKey(subkey, true);
+        }
+
+        public void DeleteSubKey(string subkey, bool throwOnMissingSubKey)
+        {
+            RegistryKeyMock key;
+            if (this.subkeys.TryGetValue(subkey, out key))
+            {
+                if (key.SubKeyCount > 0)
+                {
+                    throw new InvalidOperationException(String.Format("Registry key '{0}' has subkeys and cannot be deleted.", subkey));
+                }
+            }
+            if (throwOnMissingSubKey && key == null)
+            {
+                throw new ArgumentException("Registry key '{0}' does not exist.");
+            }
+            this.subkeys.Remove(subkey);
         }
 
         public void DeleteSubKeyTree(string subkey, bool throwOnMissingSubKey)
