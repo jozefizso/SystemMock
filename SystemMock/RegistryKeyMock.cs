@@ -49,7 +49,9 @@ namespace SystemMock
 
         public IRegistryKey CreateSubKey(string subkey)
         {
-            throw new NotImplementedException();
+            var key = new RegistryKeyMock(subkey);
+            this.subkeys.Add(subkey, key);
+            return key;
         }
 
         public void DeleteSubKey(string subkey, bool throwOnMissingSubKey)
@@ -129,7 +131,9 @@ namespace SystemMock
                 name = "";
             }
 
-            return this.values[name];
+            object obj = null;
+            this.values.TryGetValue(name, out obj);
+            return obj;
         }
 
         public RegistryValueKind GetValueKind(string name)
@@ -219,12 +223,12 @@ namespace SystemMock
 
         public int SubKeyCount
         {
-            get { return 0; }
+            get { return this.subkeys.Count; }
         }
 
         public int ValueCount
         {
-            get { return 0; }
+            get { return this.values.Count; }
         }
 
         public RegistryView View

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -86,6 +87,52 @@ namespace SystemMock.Tests
 
             // Act
             var actualValue = this.registryKey.GetValue("MyValueName");
+
+            // Assert
+            Assert.AreEqual(expectedValue, actualValue);
+        }
+
+        [Test]
+        public void GetValue_NonExistingValueName_RetursNull()
+        {
+            // Arrange & Act
+            var actualValue = this.registryKey.GetValue("NonExistingValueName");
+
+            // Assert
+            Assert.IsNull(actualValue);
+        }
+
+        [Test]
+        public void ValueCount_RegistryKeyHasSomeValuesSet_RetursNumberOfValuesInRegistryKey([Range(1,5)] int valuesCount)
+        {
+            // Arrange
+            var expectedValue = valuesCount;
+
+            for (int i = 0; i < valuesCount; i++)
+            {
+                this.registryKey.SetValue("Value"+ i, i.ToString(CultureInfo.InvariantCulture));
+            }
+
+            // Act
+            var actualValue = this.registryKey.ValueCount;
+
+            // Assert
+            Assert.AreEqual(expectedValue, actualValue);
+        }
+
+        [Test]
+        public void SubKeyCount_RegistryKeyHasSomeSubKies_RetursNumberOfSubKiesInRegistryKey([Range(1,5)] int keysCount)
+        {
+            // Arrange
+            var expectedValue = keysCount;
+
+            for (int i = 0; i < keysCount; i++)
+            {
+                this.registryKey.CreateSubKey("Key"+ i);
+            }
+
+            // Act
+            var actualValue = this.registryKey.SubKeyCount;
 
             // Assert
             Assert.AreEqual(expectedValue, actualValue);
