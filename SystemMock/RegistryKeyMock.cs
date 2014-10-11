@@ -94,14 +94,19 @@ namespace SystemMock
             this.subkeys.Remove(subkey);
         }
 
-        public void DeleteSubKeyTree(string subkey, bool throwOnMissingSubKey)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteSubKeyTree(string subkey)
         {
-            throw new NotImplementedException();
+            this.DeleteSubKeyTree(subkey, true);
+        }
+
+        public void DeleteSubKeyTree(string subkey, bool throwOnMissingSubKey)
+        {
+            RegistryKeyMock key;
+            if (throwOnMissingSubKey && !this.subkeys.TryGetValue(subkey, out key))
+            {
+                throw new ArgumentException("Registry key '{0}' does not exist.");
+            }
+            this.subkeys.Remove(subkey);
         }
 
         public void DeleteValue(string name, bool throwOnMissingValue)

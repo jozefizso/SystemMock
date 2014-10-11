@@ -404,6 +404,67 @@ namespace SystemMock.Tests
         }
 
         [Test]
+        public void DeleteSubKeyTree_RegistryKeyWithoutSubKeys_RemovesTheSubKey()
+        {
+            // Arrange
+            this.registryKey.CreateSubKey("MyKey");
+
+            // Act
+            this.registryKey.DeleteSubKeyTree("MyKey");
+
+            var actualKey = this.registryKey.OpenSubKey("MyKey");
+
+            // Assert
+            Assert.IsNull(actualKey, "Registry subkey 'MyKey' should not exist.");
+        }
+
+        [Test]
+        public void DeleteSubKeyTree_SubKeyInOtherCaseSensitivity_RemovesTheSubKey()
+        {
+            // Arrange
+            this.registryKey.CreateSubKey("MyKey");
+
+            // Act
+            this.registryKey.DeleteSubKeyTree("MYKEY");
+
+            var actualKey = this.registryKey.OpenSubKey("MyKey");
+
+            // Assert
+            Assert.IsNull(actualKey, "Registry subkey 'MyKey' should not exist.");
+        }
+
+        [Test]
+        public void DeleteSubKeyTree_RegistryKeyHasSubKeys_DeletesTheTree()
+        {
+            // Arrange
+            this.registryKey.CreateSubKey(@"MyKey\SubKey");
+
+            // Act & Assert
+            this.registryKey.DeleteSubKeyTree("MyKey");
+
+            var actualKey = this.registryKey.OpenSubKey("MyKey");
+            Assert.IsNull(actualKey);
+        }
+
+        [Test]
+        public void DeleteSubKeyTree_NonExistingSubKeyName_ThrowsArgumentException()
+        {
+            // Arrange
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => this.registryKey.DeleteSubKeyTree("Non-existing subkey"));
+        }
+
+        [Test]
+        public void DeleteSubKeyTree_ForceExceptionOnNonExistingSubKeyName_ThrowsArgumentException()
+        {
+            // Arrange
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => this.registryKey.DeleteSubKeyTree("Non-existing subkey", true));
+        }
+
+        [Test]
         public void DeleteSubKey_DoNotThrowExceptionOnNonExistingSubKeyName_DoesNothing()
         {
             // Arrange
