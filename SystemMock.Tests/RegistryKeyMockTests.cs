@@ -95,6 +95,27 @@ namespace SystemMock.Tests
         }
 
         [Test]
+        public void SetValue_RegistryValueKindParameter_CreatesValueInRegistryWithSpecifiedKind()
+        {
+            // Arrange
+            var expectedValueKind = RegistryValueKind.DWord;
+
+            // Act
+            this.registryKey.SetValue("MyValueName", 1, expectedValueKind);
+            var actualValueKind = this.registryKey.GetValueKind("MyValueName");
+
+            // Assert
+            Assert.AreEqual(expectedValueKind, actualValueKind);
+        }
+
+        [Test]
+        public void GetValueKind_NonExistingValueName_ThrowsIOException()
+        {
+            // Arrange & Act & Assert
+            var ex = Assert.Throws<IOException>(() => this.registryKey.GetValueKind("Non-existing Value Name"));
+        }
+
+        [Test]
         public void GetValue_NonExistingValueName_RetursNull()
         {
             // Arrange & Act

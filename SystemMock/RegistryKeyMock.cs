@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using SystemInterface.Microsoft.Win32;
@@ -13,12 +14,12 @@ namespace SystemMock
     {
         private string name;
         private Dictionary<string, RegistryKeyMock> subkeys; 
-        private Dictionary<string, object> values;
+        private Dictionary<string, Tuple<object, RegistryValueKind>> values;
 
         public RegistryKeyMock(string name)
         {
             this.name = name;
-            this.values = new Dictionary<string, object>();
+            this.values = new Dictionary<string, Tuple<object, RegistryValueKind>>();
             this.subkeys = new Dictionary<string, RegistryKeyMock>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -166,14 +167,27 @@ namespace SystemMock
                 name = "";
             }
 
-            object obj = null;
-            this.values.TryGetValue(name, out obj);
-            return obj;
+            Tuple<object, RegistryValueKind> obj;
+            if (!this.values.TryGetValue(name, out obj))
+            {
+                return null;
+            }
+            return obj.Item1;
         }
 
         public RegistryValueKind GetValueKind(string name)
         {
-            throw new NotImplementedException();
+            if (name == null)
+            {
+                name = "";
+            }
+
+            Tuple<object, RegistryValueKind> obj;
+            if (!this.values.TryGetValue(name, out obj))
+            {
+                throw new IOException(String.Format("Registry key value '{0}' does not exist.", name));
+            }
+            return obj.Item2;
         }
 
         public string[] GetValueNames()
@@ -256,19 +270,20 @@ namespace SystemMock
             throw new NotImplementedException();
         }
 
-        public void SetValue(string name, object value, RegistryValueKind valueKind)
+        public void SetValue(string name, object value)
         {
-            throw new NotImplementedException();
+            this.SetValue(name, value, RegistryValueKind.Unknown);
         }
 
-        public void SetValue(string name, object value)
+        public void SetValue(string name, object value, RegistryValueKind valueKind)
         {
             if (name == null)
             {
                 name = "";
             }
 
-            this.values[name] = value;
+            var keyValue = new Tuple<object, RegistryValueKind>(value, valueKind);
+            this.values[name] = keyValue;
         }
 
         public int SubKeyCount
