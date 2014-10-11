@@ -142,7 +142,7 @@ namespace SystemMock
 
         public string[] GetValueNames()
         {
-            throw new NotImplementedException();
+            return this.values.Keys.OrderBy(key => key, StringComparer.OrdinalIgnoreCase).ToArray();
         }
 
         public ISafeRegistryHandle Handle

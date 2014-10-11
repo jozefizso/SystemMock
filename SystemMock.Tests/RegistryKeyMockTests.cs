@@ -139,6 +139,48 @@ namespace SystemMock.Tests
         }
 
         [Test]
+        public void GetValueNames_KeyWithOrderedValues_ReturnsArrayOfValueNames()
+        {
+            // Arrange
+            var expectedValues = new string[] { "", "Value1", "Value2", "Value3" };
+
+            foreach (var valueName in expectedValues)
+            {
+                this.registryKey.SetValue(valueName, "");
+            }
+
+            // Act
+            var actualValueNames = this.registryKey.GetValueNames();
+
+            // Assert
+            CollectionAssert.AreEqual(expectedValues, actualValueNames);
+        }
+
+        [Test]
+        public void GetValueNames_KeyWithUnorderedValues_ReturnsArrayOfValueNames()
+        {
+            // Arrange
+            var expectedValues = new string[] { "", "1", "10", "2", "Abc", "t", "TEST", "Test1", "Test2", "Testík" };
+
+            this.registryKey.SetValue("t", "");
+            this.registryKey.SetValue("Testík", "");
+            this.registryKey.SetValue("Abc", "");
+            this.registryKey.SetValue("", "");
+            this.registryKey.SetValue("10", "");
+            this.registryKey.SetValue("2", "");
+            this.registryKey.SetValue("1", "");
+            this.registryKey.SetValue("Test1", "");
+            this.registryKey.SetValue("TEST", "");
+            this.registryKey.SetValue("Test2", "");
+
+            // Act
+            var actualValueNames = this.registryKey.GetValueNames();
+
+            // Assert
+            CollectionAssert.AreEqual(expectedValues, actualValueNames);
+        }
+
+        [Test]
         public void Dispose_CallingDisposeMethod_DoesNothing()
         {
             // Arrange
