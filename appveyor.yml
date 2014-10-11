@@ -31,3 +31,6 @@ assembly_info:
 test:
   assemblies:
     - SystemMock.Tests.dll
+
+cache:
+  - packages
