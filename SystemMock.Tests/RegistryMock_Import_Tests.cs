@@ -174,5 +174,37 @@ namespace SystemMock.Tests
             Assert.AreEqual("Machine Key", actualMachineKey.GetValue(null));
             Assert.AreEqual("User Key", actualUserKey.GetValue(null));
         }
+
+        [Test]
+        public void Import_Comment_IsIgnored()
+        {
+            // Arrange
+
+            // Act
+            this.registry.Import(@";[HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests]");
+
+            var actualMachineKey = this.registry.LocalMachine;
+
+            // Assert
+            Assert.AreEqual(0, actualMachineKey.SubKeyCount);
+        }
+
+        [Test]
+        public void Import_Comment2_IsIgnored()
+        {
+            // Arrange
+
+            // Act
+            this.registry.Import(@"[HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"Key1=""Machine Key""" + Environment.NewLine +
+                                 @"" + Environment.NewLine +
+                                 @";[HKEY_CURRENT_USER\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"Key2=""User Key""" + Environment.NewLine);
+
+            var actualMachineKey = this.registry.LocalMachine.OpenSubKey(@"Software\SystemMock\UnitTests");
+
+            // Assert
+            Assert.AreEqual(2, actualMachineKey.ValueCount);
+        }
     }
 }

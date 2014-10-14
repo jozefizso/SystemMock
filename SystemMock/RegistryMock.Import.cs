@@ -19,6 +19,11 @@ namespace SystemMock
                 IRegistryKey currentKey = null;
                 while ((line = reader.ReadLine()) != null)
                 {
+                    if (line.StartsWith(";"))
+                    {
+                        continue;
+                    }
+
                     if (line.StartsWith("["))
                     {
                         var registryKey = line.TrimStart('[').TrimEnd(']');
