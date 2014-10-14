@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RegistryKeyMockTests.cs" />
+    <Compile Include="RegistryMock_Import_Tests.cs" />
     <Compile Include="RegistryMockTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
