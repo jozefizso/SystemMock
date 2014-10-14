@@ -27,6 +27,11 @@ namespace SystemMock
                         continue;
                     }
 
+                    if (currentKey == null)
+                    {
+                        continue;
+                    }
+
                     int separator = line.IndexOf('=');
                     if (separator > 0)
                     {
@@ -38,15 +43,37 @@ namespace SystemMock
                             valueName = "";
                         }
                         valueName = valueName.Trim('"');
-                        valueValue = valueValue.Trim('"');
 
-                        if (currentKey != null)
+                        if (valueValue.StartsWith("\""))
                         {
-                            currentKey.SetValue(valueName, valueValue);
+                            valueValue = valueValue.Trim('"');
+                            valueValue = valueValue.Replace(@"\\", @"\");
                         }
+                        else if (valueValue.StartsWith("hex:"))
+                        {
+                            var bytes = HexValueToBytes(valueValue);
+                            currentKey.SetValue(valueName, bytes);
+                            continue;
+                        }
+
+                        currentKey.SetValue(valueName, valueValue);
                     }
                 }
             }
+        }
+
+        private byte[] HexValueToBytes(string hexValue)
+        {
+            hexValue = hexValue.Remove(0, "hex:".Length);
+            var values = hexValue.Split(',');
+
+            var buffer = new byte[values.Length];
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                buffer[i] = Convert.ToByte(values[i], 16);
+            }
+
+            return buffer;
         }
     }
 }

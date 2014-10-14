@@ -99,5 +99,58 @@ namespace SystemMock.Tests
             Assert.AreEqual("Default Value", actualKey.GetValue(null));
             Assert.AreEqual("At Value", actualKey.GetValue("@"));
         }
+
+        [Test]
+        public void Import_SingleRegistryKeyWithSeveralValuesWithRelaxedSyntax_CreatesRegistryKey()
+        {
+            // Arrange
+
+            // Act
+            this.registry.Import(@"[HKEY_CURRENT_USER\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"Version=1.2.0" + Environment.NewLine +
+                                 @"Uninstall=0" + Environment.NewLine +
+                                 @"Guid={A88848E9-7FB0-4591-A957-A1B9D2C3B3EF}" + Environment.NewLine);
+
+            var actualKey = this.registry.CurrentUser.OpenSubKey(@"Software\SystemMock\UnitTests");
+
+            // Assert
+            Assert.IsNotNull(actualKey, @"Registry key 'HKEY_CURRENT_USER\Software\SystemMock\UnitTests' must exists.");
+            Assert.AreEqual("1.2.0", actualKey.GetValue("Version"));
+            Assert.AreEqual("0", actualKey.GetValue("Uninstall"));
+            Assert.AreEqual("{A88848E9-7FB0-4591-A957-A1B9D2C3B3EF}", actualKey.GetValue("Guid"));
+        }
+
+        [Test]
+        public void Import_ValueWithEscapedPathCharacters_CreatesRegistryKey()
+        {
+            // Arrange
+
+            // Act
+            this.registry.Import(@"[HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"""SourceDir""=""C:\\Users\\Jozef\\Downloads\\""" + Environment.NewLine);
+
+            var actualKey = this.registry.LocalMachine.OpenSubKey(@"Software\SystemMock\UnitTests");
+
+            // Assert
+            Assert.IsNotNull(actualKey, @"Registry key 'HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests' must exists.");
+            Assert.AreEqual(@"C:\Users\Jozef\Downloads\", actualKey.GetValue("SourceDir"));
+        }
+
+        [Test]
+        public void Import_ValueWithEscapedHexBytes_CreatesValueWithBytes()
+        {
+            // Arrange
+            var expectedBytes = new byte[] { 0xD0, 0x8c, 0x9D };
+
+            // Act
+            this.registry.Import(@"[HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"""Token""=hex:d0,8c,9d" + Environment.NewLine);
+
+            var actualKey = this.registry.LocalMachine.OpenSubKey(@"Software\SystemMock\UnitTests");
+
+            // Assert
+            Assert.IsNotNull(actualKey, @"Registry key 'HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests' must exists.");
+            Assert.AreEqual(expectedBytes, actualKey.GetValue("Token"));
+        }
     }
 }
