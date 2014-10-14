@@ -152,5 +152,27 @@ namespace SystemMock.Tests
             Assert.IsNotNull(actualKey, @"Registry key 'HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests' must exists.");
             Assert.AreEqual(expectedBytes, actualKey.GetValue("Token"));
         }
+
+        [Test]
+        public void Import_TwoRegistryKeys_CreatesBothKeys()
+        {
+            // Arrange
+
+            // Act
+            this.registry.Import(@"[HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"@=""Machine Key""" + Environment.NewLine +
+                                 @"" + Environment.NewLine +
+                                 @"[HKEY_CURRENT_USER\Software\SystemMock\UnitTests]" + Environment.NewLine +
+                                 @"@=""User Key""" + Environment.NewLine);
+
+            var actualMachineKey = this.registry.LocalMachine.OpenSubKey(@"Software\SystemMock\UnitTests");
+            var actualUserKey = this.registry.CurrentUser.OpenSubKey(@"Software\SystemMock\UnitTests");
+
+            // Assert
+            Assert.IsNotNull(actualMachineKey, @"Registry key 'HKEY_LOCAL_MACHINE\Software\SystemMock\UnitTests' must exists.");
+            Assert.IsNotNull(actualUserKey, @"Registry key 'HKEY_CURRENT_USER\Software\SystemMock\UnitTests' must exists.");
+            Assert.AreEqual("Machine Key", actualMachineKey.GetValue(null));
+            Assert.AreEqual("User Key", actualUserKey.GetValue(null));
+        }
     }
 }
