@@ -3,7 +3,7 @@
 # AppVeyor configuration
 #
 
-version: 0.3.0.{build}
+version: 0.3.1.{build}
 
 branches:
   except:
@@ -22,7 +22,7 @@ assembly_info:
   patch: true
   file: AssemblyInfo.*
   assembly_version: "{version}"
-  assembly_file_version: "1.0.0.0"
+  assembly_file_version: "{version}"
   assembly_informational_version: "{version}"
 
 test:
