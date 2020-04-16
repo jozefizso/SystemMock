@@ -7,6 +7,8 @@
     <owners>Jozef Izso</owners>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/jozefizso/SystemMock</projectUrl>
+    <repository type="git" url="https://github.com/jozefizso/SystemMock.git" />
+    <iconUrl>https://raw.githubusercontent.com/jozefizso/SystemMock/master/icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>SystemMock libraries allows you to easily mock Windows system resources like Registry in unit tests in .NET projects.</description>
     <releaseNotes></releaseNotes>
@@ -19,5 +21,6 @@
   <files>
     <file src="bin\$Configuration$\net45\SystemMock.*" target="lib\net45\" />
     <file src="bin\$Configuration$\net40\SystemMock.*" target="lib\net40\" />
+    <file src="..\icon.png" target="icon.png" />
   </files>
 </package>
