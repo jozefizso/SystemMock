@@ -6,7 +6,7 @@ using Microsoft.Win32;
 
 namespace SystemMock
 {
-    public class RegistryMock : IRegistry
+    public partial class RegistryMock : IRegistry
     {
         private RegistryKeyMock classesRootKey;
         private RegistryKeyMock currentConfigKey;
@@ -72,6 +72,17 @@ namespace SystemMock
 
         public void SetValue(string keyName, string valueName, object value)
         {
+            var subKey = this.CreateSubKey(keyName);
+            subKey.SetValue(valueName, value);
+        }
+
+        public IRegistryKey Users
+        {
+            get { return this.usersKey; }
+        }
+
+        private IRegistryKey CreateSubKey(string keyName)
+        {
             string subKeyName;
             var rootKeyName = this.GetRootKeyName(keyName, out subKeyName);
             var rootKey = this.keys[rootKeyName];
@@ -80,12 +91,7 @@ namespace SystemMock
             {
                 subKey = rootKey.CreateSubKey(subKeyName);
             }
-            subKey.SetValue(valueName, value);
-        }
-
-        public IRegistryKey Users
-        {
-            get { return this.usersKey; }
+            return subKey;
         }
 
         private string GetRootKeyName(string fullKeyName, out string subKeyName)

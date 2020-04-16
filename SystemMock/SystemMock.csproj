@@ -64,6 +64,7 @@
     <Compile Include="RegistryConstants.cs" />
     <Compile Include="RegistryKeyMock.cs" />
     <Compile Include="RegistryMock.cs" />
+    <Compile Include="RegistryMock.Import.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Build\SystemMock.snk">
@@ -84,7 +85,6 @@
   <Target Name="BeforeBuild">
   </Target>
   -->
-
   <Target Name="AfterBuild">
     <!-- Load up the information from the assembly -->
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
@@ -92,7 +92,6 @@
     </GetAssemblyIdentity>
     <Message Text="Assembly version: %(OutputAssemblyInfo.Version)" />
   </Target>
-
   <Target Name="Package">
     <MakeDir Directories="$(MSBuildThisFileDirectory)..\publish" Condition=" !Exists('$(MSBuildThisFileDirectory)..\publish') " />
     <!-- Package the project -->
