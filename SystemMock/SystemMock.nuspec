@@ -5,12 +5,12 @@
     <version>$Version$</version>
     <authors>Jozef Izso</authors>
     <owners>Jozef Izso</owners>
-    <licenseUrl>https://github.com/jozefizso/SystemMock/blob/master/LICENSE.txt</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/jozefizso/SystemMock</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>SystemMock libraries allows you to easily mock Windows system resources like Registry in unit tests in .NET projects.</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2014 Jozef Izso</copyright>
+    <copyright>Copyright © 2014-2020 Jozef Izso</copyright>
     <tags>SystemMock SystemWrapper mocks unit tests registry</tags>
     <dependencies>
       <dependency id="SystemWrapper.Interfaces" version="0.7" />

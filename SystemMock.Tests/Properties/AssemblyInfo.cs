@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SystemMock.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("goIT")]
+[assembly: AssemblyCompany("goIT Solutions, s. r. o.")]
 [assembly: AssemblyProduct("SystemMock")]
-[assembly: AssemblyCopyright("Copyright (c) 2014 Jozef Izso")]
+[assembly: AssemblyCopyright("Copyright © 2014-2020 Jozef Izso")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
