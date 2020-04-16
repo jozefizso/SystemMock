@@ -126,6 +126,19 @@ namespace SystemMock.Tests
         }
 
         [Test]
+        public void GetValue_NonExistingValueNameWithDefaultParameter_RetursDefaultParameterValue()
+        {
+            // Arrange
+            var expectedDefaultValue = "Default Value";
+
+            // Act
+            var actualValue = this.registryKey.GetValue("NonExistingValueName", expectedDefaultValue);
+
+            // Assert
+            Assert.AreEqual(expectedDefaultValue, actualValue);
+        }
+
+        [Test]
         [TestCase("SubKey")]
         [TestCase("SubKey 1")]
         [TestCase("SubKey #1")]

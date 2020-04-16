@@ -157,11 +157,6 @@ namespace SystemMock
 
         public object GetValue(string name, object defaultValue)
         {
-            throw new NotImplementedException();
-        }
-
-        public object GetValue(string name)
-        {
             if (name == null)
             {
                 name = "";
@@ -170,9 +165,14 @@ namespace SystemMock
             Tuple<object, RegistryValueKind> obj;
             if (!this.values.TryGetValue(name, out obj))
             {
-                return null;
+                return defaultValue;
             }
             return obj.Item1;
+        }
+
+        public object GetValue(string name)
+        {
+            return this.GetValue(name, null);
         }
 
         public RegistryValueKind GetValueKind(string name)
