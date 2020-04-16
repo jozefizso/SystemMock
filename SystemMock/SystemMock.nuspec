@@ -13,7 +13,7 @@
     <copyright>Copyright (c) 2014 Jozef Izso</copyright>
     <tags>SystemMock SystemWrapper mocks unit tests registry</tags>
     <dependencies>
-      <dependency id="SystemWrapper.Interfaces" version="[0.7.0]" />
+      <dependency id="SystemWrapper.Interfaces" version="0.7" />
     </dependencies>
   </metadata>
   <files>
