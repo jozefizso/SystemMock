@@ -19,6 +19,5 @@
   <files>
     <file src="bin\$Configuration$\net45\SystemMock.*" target="lib\net45\" />
     <file src="bin\$Configuration$\net40\SystemMock.*" target="lib\net40\" />
-    <file src="**\*.cs" exclude="bin\**;obj\**" target="src\SystemMock\" />
   </files>
 </package>

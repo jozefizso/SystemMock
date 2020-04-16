@@ -73,13 +73,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -95,6 +88,6 @@
   <Target Name="Package">
     <MakeDir Directories="$(MSBuildThisFileDirectory)..\publish" Condition=" !Exists('$(MSBuildThisFileDirectory)..\publish') " />
     <!-- Package the project -->
-    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="$(MSBuildThisFileDirectory)..\.nuget\NuGet.exe pack &quot;$(MSBuildProjectName).nuspec&quot; -Verbosity detailed -Symbols -OutputDir &quot;$(MSBuildThisFileDirectory)..\publish&quot; -Version %(OutputAssemblyInfo.Version) -Properties &quot;Configuration=Release&quot;" />
+    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="$(MSBuildThisFileDirectory)..\.nuget\NuGet.exe pack &quot;$(MSBuildProjectName).nuspec&quot; -Verbosity detailed -Symbols -SymbolPackageFormat snupkg -OutputDir &quot;$(MSBuildThisFileDirectory)..\publish&quot; -Version %(OutputAssemblyInfo.Version) -Properties &quot;Configuration=Release&quot;" />
   </Target>
 </Project>
